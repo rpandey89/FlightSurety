@@ -124,7 +124,7 @@ contract FlightSuretyData {
     /**
     * @dev Sets contract address authorized to call the functions
     */
-    function authorizeContract(address contractAdress)
+    function authorizeContract(address contractAddress)
     external
     requireContractOwner
     {
@@ -134,7 +134,7 @@ contract FlightSuretyData {
     /**
     * @dev Removes contract from authorized list
     */
-    function deAuthorizeContract(address contractAdress)
+    function deAuthorizeContract(address contractAddress)
     external
     requireContractOwner
     {
@@ -150,7 +150,7 @@ contract FlightSuretyData {
     returns(bool)
     {
         bytes32 flightKey = getFlightKey(airline, flight, timestamp);
-        return passengerFlightInsurance[passenger][airline] > 0;
+        return passengerFlightInsurance[passenger][flightKey] > 0;
     }
 
     /********************************************************************************************/
@@ -209,6 +209,7 @@ contract FlightSuretyData {
     requireIsOperational
     requireIsCallerContractAuthorized
     requireIsAirlineRegistered(airline)
+    view
     returns(uint)
     {
         return airlineFunds[airline];
@@ -227,7 +228,7 @@ contract FlightSuretyData {
     payable
     {
         bytes32 flightKey = getFlightKey(airline, flight, timestamp);
-        flightPassengerInsured[flightKey].push(passenger);
+        flightPassengersInsured[flightKey].push(passenger);
         passengerFlightInsurance[passenger][flightKey] = amount;
         passengerInsurancePayout[flightKey][passenger] = 0;
     }
@@ -242,7 +243,7 @@ contract FlightSuretyData {
     requireIsCallerContractAuthorized
     {
         bytes32 flightKey = getFlightKey(airline, flight, timestamp);
-        address[] storage insuredPassengers = flightPassengerInsured[flightKey];
+        address[] storage insuredPassengers = flightPassengersInsured[flightKey];
         for(uint8 i = 0; i < insuredPassengers.length; i++) {
             address passenger = insuredPassengers[i];
             uint256 amountToBePaid;
@@ -250,7 +251,7 @@ contract FlightSuretyData {
             uint paidAmount = passengerInsurancePayout[flightKey][passenger];
             // pay only if nothing has been paid
             if(paidAmount == 0) {
-                amountToBePaid = amount.mul(insuranceFactor).div(insuranceDivisor);
+                amountToBePaid = amount.mul(insuranceMultiple).div(insuranceDivisor);
                 passengerInsurancePayout[flightKey][passenger] = amountToBePaid;
                 passengerAmountBalance[passenger] = passengerAmountBalance[passenger] + amountToBePaid;
             }
