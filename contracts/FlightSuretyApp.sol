@@ -5,7 +5,6 @@ pragma solidity ^0.4.25;
 // More info: https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2018/november/smart-contract-insecurity-bad-arithmetic/
 
 import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "./FlightSuretyData.sol";
 
 /************************************************** */
 /* FlightSurety Smart Contract                      */
@@ -243,11 +242,10 @@ contract FlightSuretyApp {
     requireIsOperational
     requireIsAirlineRegistered(airline)
     requireIsTimestampValid(timestamp)
-    require
     payable
     {
         require(msg.value <= MAX_INSURANCE_ALLOWED, "Insurance fee should be less than or equal to 1 ether");
-        require(!isPassengerInsured(airline, flight, timestamp, msg.sender), "Passenger already insured for this flight");
+        require(!flightSuretyDataContract.isPassengerInsured(airline, flight, timestamp, msg.sender), "Passenger already insured for this flight");
         address(flightSuretyDataContract).transfer(msg.value);
         flightSuretyDataContract.buy(airline, flight, timestamp, msg.sender, msg.value);
     }
@@ -503,7 +501,7 @@ contract FlightSuretyData {
     function registerAirline(address airline) external returns(bool);
     function getAllAirlines() external view returns(address[]);
     function fundAirline(address airline, uint amount) external;
-    function getAirlineFunds(address airline) external returns(uint);
+    function getAirlineFunds(address airline) external view returns(uint);
     function buy(address airline, string flight, uint256 timestamp, address passenger, uint amount) external payable;
     function creditInsurees(address airline, string flight, uint256 timestamp, uint insuranceMultiple, uint insuranceDivisor) external;
     function getPassengerBalance(address passenger) external view returns(uint);
