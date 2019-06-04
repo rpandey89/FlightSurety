@@ -99,7 +99,7 @@ contract FlightSuretyApp {
     */
     modifier requireCallerAirlineHasSufficientFunds()
     {
-        uint funds = flightSuretyDataContract.getAirlineFunds(msg.sender);
+        uint funds = getAirlineFunds(msg.sender);
         require(funds >= MIN_AIRLINES_FUND_REQUIRED, "Insufficient funds deposited by airline");
         _;
     }
@@ -173,6 +173,14 @@ contract FlightSuretyApp {
     internal
     {
         airlinesVotedForAirlineMapping[registeringAirline][airline] = true;
+    }
+
+    function getAirlineFunds(address airline)
+    public
+    view
+    returns(uint)
+    {
+        return flightSuretyDataContract.getAirlineFunds(airline);
     }
 
 
@@ -254,7 +262,7 @@ contract FlightSuretyApp {
     * @dev Called after oracle has updated flight status
     *
     */
-    function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode)
+function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode)
     internal
     requireIsOperational
     {

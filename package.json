@@ -6,14 +6,18 @@
     "test": "test"
   },
   "repository": "https://github.com/techbubble/flightsurety",
-  "license": "MIT",
+  "license": "ISC",
   "scripts": {
-    "test": "truffle test ./test/flightSurety.js",
+    "compile": "./node_modules/truffle/build/cli.bundled.js compile",
+    "migrate": "./node_modules/truffle/build/cli.bundled.js migrate --network development --reset --compile-all",
+    "test": "./node_modules/truffle/build/cli.bundled.js test ./test/flightSurety.js",
+    "testOracle": "./node_modules/truffle/build/cli.bundled.js test ./test/oracles.js",
+    "ganache": "ganache-cli -l 99999999999999 -a 50 -m 'doll source together survey box meat assist green sand conduct ostrich ginger'",
     "dapp": "webpack-dev-server --mode development --config webpack.config.dapp.js",
     "dapp:prod": "webpack --mode production  --config webpack.config.dapp.js",
     "server": "rm -rf ./build/server && webpack --config webpack.config.server.js"
   },
-  "author": "Nik Kalyani <nik@kalyani.com> https://www.kalyani.com",
+  "author": "Rahul Pandey",
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.46",
     "@babel/core": "^7.0.0-beta.46",
@@ -38,9 +42,9 @@
     "truffle": "5.0.2",
     "truffle-hdwallet-provider": "1.0.2",
     "web3": "1.0.0-beta.37",
-    "webpack": "^4.6.0",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "3.1.14",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.1.15",
     "webpack-node-externals": "1.7.2"
   },
   "dependencies": {}
